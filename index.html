@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mobile Legends Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/@shadcn/ui/dist/ui.css">
@@ -19,11 +19,11 @@
         }
         .energy-orb {
             position: absolute;
-            width: 8px;
-            height: 8px;
+            width: 0.5rem;
+            height: 0.5rem;
             border-radius: 50%;
             background: radial-gradient(circle, #60a5fa, #3b82f6);
-            box-shadow: 0 0 10px #3b82f6, 0 0 20px #3b82f6;
+            box-shadow: 0 0 0.625rem #3b82f6, 0 0 1.25rem #3b82f6;
             animation: float 8s linear infinite;
             opacity: 0.7;
         }
@@ -31,12 +31,12 @@
             0% { transform: translateY(100vh) translateX(0); opacity: 0; }
             10% { opacity: 0.7; }
             90% { opacity: 0.7; }
-            100% { transform: translateY(-100px) translateX(50px); opacity: 0; }
+            100% { transform: translateY(-6.25rem) translateX(3.125rem); opacity: 0; }
         }
         .sword-effect {
             position: absolute;
-            width: 100px;
-            height: 100px;
+            width: 6.25rem;
+            height: 6.25rem;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%233b82f6"><path d="M18 2L20 4L17 7L21 11L18 14L22 18L18 22L14 18L11 21L7 17L4 20L2 18L13 7L18 2Z"/></svg>') no-repeat;
             background-size: contain;
             opacity: 0.1;
@@ -48,8 +48,8 @@
         }
         .character-silhouette {
             position: absolute;
-            width: 200px;
-            height: 300px;
+            width: 12.5rem;
+            height: 18.75rem;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 150"><path fill="%233b82f6" opacity="0.05" d="M50 0L60 20L80 30L70 50L80 70L60 80L50 100L40 80L20 70L30 50L20 30L40 20L50 0Z"/></svg>') no-repeat;
             background-size: contain;
             animation: fade 6s ease-in-out infinite;
@@ -64,10 +64,10 @@
         .flame-border::before {
             content: '';
             position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
+            top: -0.3125rem;
+            left: -0.3125rem;
+            right: -0.3125rem;
+            bottom: -0.3125rem;
             border-radius: 1rem;
             background: linear-gradient(45deg, 
                 transparent 25%, 
@@ -76,20 +76,20 @@
                 transparent 50%, 
                 transparent 75%, 
                 rgba(255, 100, 0, 0.3) 75%);
-            background-size: 20px 20px;
+            background-size: 1.25rem 1.25rem;
             animation: flameMove 2s linear infinite;
             z-index: -1;
-            filter: blur(2px);
+            filter: blur(0.125rem);
         }
         @keyframes flameMove {
             0% { background-position: 0 0; }
-            100% { background-position: 20px 20px; }
+            100% { background-position: 1.25rem 1.25rem; }
         }
         .button-grid {
             background: 
                 linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)),
                 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none" stroke="%233b82f6" stroke-width="0.5" stroke-dasharray="2 2"/></svg>');
-            background-size: 20px 20px;
+            background-size: 1.25rem 1.25rem;
             position: relative;
             overflow: hidden;
         }
@@ -108,18 +108,20 @@
             z-index: 1;
             transition: all 0.3s ease;
             overflow: hidden;
+            min-height: 3.5rem;
+            font-size: 1.2rem;
         }
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+            transform: translateY(-0.125rem);
+            box-shadow: 0 0.3125rem 0.9375rem rgba(59, 130, 246, 0.4);
         }
         .btn::after {
             content: '';
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 5px;
-            height: 5px;
+            width: 0.3125rem;
+            height: 0.3125rem;
             background: rgba(255, 255, 255, 0.5);
             opacity: 0;
             border-radius: 100%;
@@ -139,14 +141,61 @@
                 opacity: 0;
             }
         }
+
+        /* Mobile-specific styles */
+        @media (max-width: 640px) {
+            body {
+                padding: 0.5rem;
+                min-height: -webkit-fill-available;
+                height: 100vh;
+                height: -webkit-fill-available;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+            #display {
+                font-size: 2rem;
+                padding: 0.5rem 0;
+            }
+            .flame-border {
+                width: 100%;
+                max-width: 100%;
+                border-radius: 1rem;
+                margin: 0 auto;
+                max-height: 80vh;
+            }
+            .button-grid {
+                gap: 0.25rem;
+                padding: 0.5rem;
+            }
+            .btn {
+                min-height: 3.5rem;
+                font-size: 1.2rem;
+            }
+            .sword-effect {
+                display: none;
+            }
+            .character-silhouette {
+                width: 6rem;
+                height: 9rem;
+                bottom: -2rem;
+            }
+        }
+
+        /* Tablet-specific styles */
+        @media (min-width: 641px) and (max-width: 1024px) {
+            .flame-border {
+                max-width: 80%;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-900 min-h-screen flex items-center justify-center p-4">
     <div class="ml-bg" id="ml-background">
         <div class="sword-effect" style="top: 20%; left: 10%;"></div>
         <div class="sword-effect" style="top: 60%; left: 80%; transform: rotate(45deg);"></div>
-        <div class="character-silhouette" style="bottom: -50px; left: 10%;"></div>
-        <div class="character-silhouette" style="bottom: -50px; right: 10%; transform: scaleX(-1);"></div>
+        <div class="character-silhouette" style="bottom: -3.125rem; left: 10%;"></div>
+        <div class="character-silhouette" style="bottom: -3.125rem; right: 10%; transform: scaleX(-1);"></div>
     </div>
 
     <div class="flame-border bg-gray-800/70 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden border border-blue-700/50 w-full max-w-lg">
