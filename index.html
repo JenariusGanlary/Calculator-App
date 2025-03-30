@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Legends Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@shadcn/ui/dist/ui.css">
+    <style>
+        .ml-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+        }
+        .energy-orb {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #60a5fa, #3b82f6);
+            box-shadow: 0 0 10px #3b82f6, 0 0 20px #3b82f6;
+            animation: float 8s linear infinite;
+            opacity: 0.7;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.7; }
+            100% { transform: translateY(-100px) translateX(50px); opacity: 0; }
+        }
+        .sword-effect {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%233b82f6"><path d="M18 2L20 4L17 7L21 11L18 14L22 18L18 22L14 18L11 21L7 17L4 20L2 18L13 7L18 2Z"/></svg>') no-repeat;
+            background-size: contain;
+            opacity: 0.1;
+            animation: pulse 4s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.1; }
+            50% { transform: scale(1.2); opacity: 0.15; }
+        }
+        .character-silhouette {
+            position: absolute;
+            width: 200px;
+            height: 300px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 150"><path fill="%233b82f6" opacity="0.05" d="M50 0L60 20L80 30L70 50L80 70L60 80L50 100L40 80L20 70L30 50L20 30L40 20L50 0Z"/></svg>') no-repeat;
+            background-size: contain;
+            animation: fade 6s ease-in-out infinite;
+        }
+        @keyframes fade {
+            0%, 100% { opacity: 0.05; }
+            50% { opacity: 0.1; }
+        }
+        .flame-border {
+            position: relative;
+        }
+        .flame-border::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 1rem;
+            background: linear-gradient(45deg, 
+                transparent 25%, 
+                rgba(255, 100, 0, 0.3) 25%, 
+                rgba(255, 100, 0, 0.3) 50%, 
+                transparent 50%, 
+                transparent 75%, 
+                rgba(255, 100, 0, 0.3) 75%);
+            background-size: 20px 20px;
+            animation: flameMove 2s linear infinite;
+            z-index: -1;
+            filter: blur(2px);
+        }
+        @keyframes flameMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 20px 20px; }
+        }
+        .button-grid {
+            background: 
+                linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none" stroke="%233b82f6" stroke-width="0.5" stroke-dasharray="2 2"/></svg>');
+            background-size: 20px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .button-grid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, transparent 0%, rgba(30, 41, 59, 0.8) 100%);
+            z-index: 0;
+        }
+        .btn {
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%, -50%);
+            transform-origin: 50% 50%;
+        }
+        .btn:hover::after {
+            animation: ripple 1s ease-out;
+        }
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 min-h-screen flex items-center justify-center p-4">
+    <div class="ml-bg" id="ml-background">
+        <div class="sword-effect" style="top: 20%; left: 10%;"></div>
+        <div class="sword-effect" style="top: 60%; left: 80%; transform: rotate(45deg);"></div>
+        <div class="character-silhouette" style="bottom: -50px; left: 10%;"></div>
+        <div class="character-silhouette" style="bottom: -50px; right: 10%; transform: scaleX(-1);"></div>
+    </div>
+
+    <div class="flame-border bg-gray-800/70 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden border border-blue-700/50 w-full max-w-lg">
+        <div class="p-4 bg-gradient-to-b from-blue-900/70 to-blue-900/30 border-b border-blue-700/30">
+            <div class="text-right text-blue-400 text-sm font-mono">JENARIUS'S PERSONAL CALCULATOR</div>
+            <div id="display" class="text-right text-4xl font-semibold text-white py-2 font-mono">0</div>
+        </div>
+
+        <div class="button-grid grid grid-cols-4 gap-1 p-2">
+            <button class="btn bg-blue-900/70 hover:bg-blue-800/70 text-white" onclick="clearDisplay()">C</button>
+            <button class="btn bg-blue-900/70 hover:bg-blue-800/70 text-white" onclick="appendToDisplay('(')">(</button>
+            <button class="btn bg-blue-900/70 hover:bg-blue-800/70 text-white" onclick="appendToDisplay(')')">)</button>
+            <button class="btn bg-blue-700 hover:bg-blue-600 text-white" onclick="appendToDisplay('/')">/</button>
+            
+            <button class="btn bg-blue-800/50 hover:bg-blue-700/50 text-white" onclick="appendToDisplay('7')">7</button>
+            <button class="btn bg-blue-800/50 hover:bg-blue-700/50 text-white" onclick="appendToDisplay('8')">8</button>
+            <button class="btn bg-blue-800/50 hover:bg-blue-700/50 text-white" onclick="appendToDisplay('9')">9</button>
+            <button class="btn bg-blue-700 hover:bg-blue-600 text-white" onclick="appendToDisplay('*')">×</button>
+            
+            <button class="btn bg-blue-800/50 hover:bg-blue-700/50 text-white" onclick="appendToDisplay('4')">4</button>
+            <button class="btn bg-blue-800/50 hover:bg-blue-700/50 text-white" onclick="appendToDisplay('5')">5</button>
+            <button class="btn bg-blue-800/50 hover:bg-blue-700/50 text-white" onclick="appendToDisplay('6')">6</button>
+            <button class="btn bg-blue-700 hover:bg-blue-600 text-white" onclick="appendToDisplay('-')">-</button>
+            
+            <button class="btn bg-blue-800/50 hover:bg-blue-700/50 text-white" onclick="appendToDisplay('1')">1</button>
+            <button class="btn bg-blue-800/50 hover:bg-blue-700/50 text-white" onclick="appendToDisplay('2')">2</button>
+            <button class="btn bg-blue-800/50 hover:bg-blue-700/50 text-white" onclick="appendToDisplay('3')">3</button>
+            <button class="btn bg-blue-700 hover:bg-blue-600 text-white" onclick="appendToDisplay('+')">+</button>
+            
+            <button class="btn bg-blue-800/50 hover:bg-blue-700/50 text-white col-span-2" onclick="appendToDisplay('0')">0</button>
+            <button class="btn bg-blue-800/50 hover:bg-blue-700/50 text-white" onclick="appendToDisplay('.')">.</button>
+            <button class="btn bg-blue-700 hover:bg-blue-600 text-white" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let currentDisplay = '0';
+        const display = document.getElementById('display');
+        
+        function appendToDisplay(value) {
+            if (currentDisplay === '0' && value !== '.') {
+                currentDisplay = value;
+            } else {
+                currentDisplay += value;
+            }
+            display.textContent = currentDisplay;
+        }
+        
+        function clearDisplay() {
+            currentDisplay = '0';
+            display.textContent = currentDisplay;
+        }
+        
+        function calculate() {
+            try {
+                currentDisplay = eval(currentDisplay).toString();
+                display.textContent = currentDisplay;
+            } catch (error) {
+                display.textContent = 'Error';
+                setTimeout(clearDisplay, 1000);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const bg = document.getElementById('ml-background');
+            for (let i = 0; i < 50; i++) {
+                const orb = document.createElement('div');
+                orb.classList.add('energy-orb');
+                orb.style.left = `${Math.random() * 100}%`;
+                orb.style.animationDuration = `${Math.random() * 5 + 5}s`;
+                orb.style.animationDelay = `${Math.random() * 3}s`;
+                bg.appendChild(orb);
+            }
+        });
+    </script>
+</body>
+</html>
