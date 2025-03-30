@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Calculator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- shadcn UI -->
+    <link rel="stylesheet" href="https://unpkg.com/@shadcn/ui/dist/ui.css">
+    <!-- Animation library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        .calculator-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.2);
+            animation: float 15s infinite linear;
+        }
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 min-h-screen flex items-center justify-center p-4">
+    <!-- Animated Background -->
+    <div class="calculator-bg" id="particles"></div>
+
+    <!-- Calculator Container -->
+    <div class="bg-gray-800/50 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden border border-gray-700 w-full max-w-md">
+        <!-- Display -->
+        <div class="p-4 bg-gray-900/50">
+            <div class="text-right text-gray-400 text-sm">CALCULATOR</div>
+            <div id="display" class="text-right text-4xl font-semibold text-white py-2">0</div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="grid grid-cols-4 gap-1 p-2 bg-gray-800/30">
+            <button class="btn bg-gray-700 hover:bg-gray-600 text-white" onclick="clearDisplay()">C</button>
+            <button class="btn bg-gray-700 hover:bg-gray-600 text-white" onclick="appendToDisplay('(')">(</button>
+            <button class="btn bg-gray-700 hover:bg-gray-600 text-white" onclick="appendToDisplay(')')">)</button>
+            <button class="btn bg-indigo-600 hover:bg-indigo-500 text-white" onclick="appendToDisplay('/')">/</button>
+            
+            <button class="btn bg-gray-600 hover:bg-gray-500 text-white" onclick="appendToDisplay('7')">7</button>
+            <button class="btn bg-gray-600 hover:bg-gray-500 text-white" onclick="appendToDisplay('8')">8</button>
+            <button class="btn bg-gray-600 hover:bg-gray-500 text-white" onclick="appendToDisplay('9')">9</button>
+            <button class="btn bg-indigo-600 hover:bg-indigo-500 text-white" onclick="appendToDisplay('*')">×</button>
+            
+            <button class="btn bg-gray-600 hover:bg-gray-500 text-white" onclick="appendToDisplay('4')">4</button>
+            <button class="btn bg-gray-600 hover:bg-gray-500 text-white" onclick="appendToDisplay('5')">5</button>
+            <button class="btn bg-gray-600 hover:bg-gray-500 text-white" onclick="appendToDisplay('6')">6</button>
+            <button class="btn bg-indigo-600 hover:bg-indigo-500 text-white" onclick="appendToDisplay('-')">-</button>
+            
+            <button class="btn bg-gray-600 hover:bg-gray-500 text-white" onclick="appendToDisplay('1')">1</button>
+            <button class="btn bg-gray-600 hover:bg-gray-500 text-white" onclick="appendToDisplay('2')">2</button>
+            <button class="btn bg-gray-600 hover:bg-gray-500 text-white" onclick="appendToDisplay('3')">3</button>
+            <button class="btn bg-indigo-600 hover:bg-indigo-500 text-white" onclick="appendToDisplay('+')">+</button>
+            
+            <button class="btn bg-gray-600 hover:bg-gray-500 text-white col-span-2" onclick="appendToDisplay('0')">0</button>
+            <button class="btn bg-gray-600 hover:bg-gray-500 text-white" onclick="appendToDisplay('.')">.</button>
+            <button class="btn bg-indigo-600 hover:bg-indigo-500 text-white" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        // Calculator logic
+        let currentDisplay = '0';
+        const display = document.getElementById('display');
+        
+        function appendToDisplay(value) {
+            if (currentDisplay === '0' && value !== '.') {
+                currentDisplay = value;
+            } else {
+                currentDisplay += value;
+            }
+            display.textContent = currentDisplay;
+        }
+        
+        function clearDisplay() {
+            currentDisplay = '0';
+            display.textContent = currentDisplay;
+        }
+        
+        function calculate() {
+            try {
+                currentDisplay = eval(currentDisplay).toString();
+                display.textContent = currentDisplay;
+            } catch (error) {
+                display.textContent = 'Error';
+                setTimeout(clearDisplay, 1000);
+            }
+        }
+
+        // Background animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 20 + 10;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100 + 100}%`;
+                particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        });
+    </script>
+</body>
+</html>
